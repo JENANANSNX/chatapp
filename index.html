@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat + Signup/Login</title>
+</head>
+<body>
+
+  <h1>Create an Account</h1>
+  <form id="signupForm">
+    <input type="text" id="signupUsername" placeholder="Username" required><br><br>
+    <input type="password" id="signupPassword" placeholder="Password" required><br><br>
+    <button type="submit">Sign Up</button>
+  </form>
+  <p id="signupMessage"></p>
+
+  <hr>
+
+  <h1>Login</h1>
+  <form id="loginForm">
+    <input type="text" id="loginUsername" placeholder="Username" required><br><br>
+    <input type="password" id="loginPassword" placeholder="Password" required><br><br>
+    <button type="submit">Login</button>
+  </form>
+  <p id="loginMessage"></p>
+
+  <hr>
+
+  <h1>Chat With Me</h1>
+  <ul id="messages"></ul>
+  <input id="m" autocomplete="off" disabled>
+  <button id="sendBtn" disabled>Send</button>
+  <button id="logoutBtn">Logout</button>
+
+  <!-- Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script>
+    const socket = io();
+
+    // Elements
+    const chatInput = document.getElementById("m");
+    const sendBtn = document.getElementById("sendBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const signupMessage = document.getElementById("signupMessage");
+    const loginMessage = document.getElementById("loginMessage");
+
+    let currentUser = localStorage.getItem("chatUser");
+
+    // Enable chat if already logged in
+    if (currentUser) {
+      chatInput.disabled = false;
+      sendBtn.disabled = false;
+      loginMessage.innerText = `Logged in as ${currentUser}`;
+    }
+
+    // --- Chat functions ---
+    function sendMessage() {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+      socket.emit("chat message", `${currentUser}: ${msg}`);
+      chatInput.value = "";
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    socket.on("chat message", (msg) => {
+      const li = document.createElement("li");
+      li.textContent = msg;
+      document.getElementById("messages").appendChild(li);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    // --- Signup ---
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("signupUsername").value;
+      const password = document.getElementById("signupPassword").value;
+
+      const res = await fetch("/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      signupMessage.innerText = data.message;
+    });
+
+    // --- Login ---
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("loginUsername").value;
+      const password = document.getElementById("loginPassword").value;
+
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      loginMessage.innerText = data.message;
+
+      if (data.message === "Logged in!") {
+        currentUser = username;
+        localStorage.setItem("chatUser", username);
+        chatInput.disabled = false;
+        sendBtn.disabled = false;
+      }
+    });
+
+    // --- Logout ---
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("chatUser");
+      currentUser = null;
+      chatInput.disabled = true;
+      sendBtn.disabled = true;
+      loginMessage.innerText = "Logged out.";
+    });
+  </script>
+
+</body>
+</html>
