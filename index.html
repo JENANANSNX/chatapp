@@ -7,17 +7,16 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-   <p id="status">Connecting to Supabase...</p>
+  <p id="status">Connecting to Supabase...</p>
+
   <!-- REGISTER SCREEN -->
   <div id="register-screen" class="screen active">
     <h1>Create Account</h1>
-    <input id="username" type="text" placeholder="Username" />
     <input id="email" type="email" placeholder="Email" />
     <input id="password" type="password" placeholder="Password" />
     <button id="register-btn">Register</button>
     <p class="switch-text">
-      Already have an account?
-      <span id="to-login">Login</span>
+      Already have an account? <span id="to-login">Login</span>
     </p>
   </div>
 
@@ -28,33 +27,18 @@
     <input id="login-password" type="password" placeholder="Password" />
     <button id="login-btn">Login</button>
     <p class="switch-text">
-      Don't have an account?
-      <span id="to-register">Register</span>
+      Don't have an account? <span id="to-register">Register</span>
     </p>
   </div>
 
   <!-- CHAT SCREEN -->
   <div id="chat-screen" class="screen">
-    <header class="chat-header">
-      <div class="profile">
-        <div class="avatar"></div>
-        <div class="user-info">
-          <span class="username">Username</span>
-          <div class="badges">
-            <span class="badge">🌟</span>
-            <span class="badge">🔥</span>
-          </div>
-        </div>
-      </div>
-    </header>
-    <div class="messages"></div>
-    <div class="chat-input">
-      <input id="message-input" type="text" placeholder="Type a message..." />
-      <button id="send-btn">Send</button>
-    </div>
+    <h1>Chat</h1>
+    <p>Welcome! You are logged in.</p>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script src="app.js"></script>
+  <!-- SUPABASE CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
