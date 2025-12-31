@@ -5,7 +5,7 @@ document.body.insertAdjacentHTML('afterbegin', '<p style="color:red">JS LOADED</
 // 1️⃣ Supabase client
 const supabase = supabase.createClient(
   'https://rckcnhdgqmnshrnebtzi.supabase.co', // replace with your Supabase URL
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJja2NuaGRncW1uc2hybmVidHppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMzIzMTcsImV4cCI6MjA4MjcwODMxN30.ONVRe0lCq5kcEEMWJ6kHb7QYuAyqzZYlPwxCGNDYapg'                 // replace with your anon key
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJja2NuaGRncW1uc2hybmVidHppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMzIzMTcsImV4cCI6MjA4MjcwODMxN30.ONVRe0lCq5kcEEMWJ6kHb7QYuAyqzZYlPwxCGNDYapg'                        // replace with your anon key
 );
 
 // --------------------
@@ -37,14 +37,16 @@ function showScreen(screen) {
 // --------------------
 // 4️⃣ Supabase connection test
 async function testSupabase() {
-  const { error } = await supabase.from('users').select('id').limit(1);
+  try {
+    const { error } = await supabase.from('users').select('id').limit(1);
+    if (error) throw error;
 
-  if (error) {
-    statusText.textContent = '❌ Supabase connection failed';
-    statusText.style.color = 'red';
-  } else {
     statusText.textContent = '✅ Supabase connected successfully';
     statusText.style.color = 'limegreen';
+  } catch (err) {
+    statusText.textContent = '❌ Supabase connection failed';
+    statusText.style.color = 'red';
+    console.error(err);
   }
 }
 
@@ -56,11 +58,7 @@ registerBtn.addEventListener('click', async () => {
   const email = registerEmail.value;
   const password = registerPassword.value;
 
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password
-  });
-
+  const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) {
     alert('Register failed: ' + error.message);
     return;
@@ -75,11 +73,7 @@ loginBtn.addEventListener('click', async () => {
   const email = loginEmail.value;
   const password = loginPassword.value;
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
     alert('Login failed: ' + error.message);
     return;
@@ -99,10 +93,5 @@ checkSession();
 
 // --------------------
 // 8️⃣ Switch links
-document.getElementById('to-login').addEventListener('click', () => {
-  showScreen(loginScreen);
-});
-
-document.getElementById('to-register').addEventListener('click', () => {
-  showScreen(registerScreen);
-});
+document.getElementById('to-login').addEventListener('click', () => showScreen(loginScreen));
+document.getElementById('to-register').addEventListener('click', () => showScreen(registerScreen));
