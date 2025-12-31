@@ -5,7 +5,7 @@ document.body.insertAdjacentHTML('afterbegin', '<p style="color:red">JS LOADED</
 // 1️⃣ Supabase client
 const supabase = supabase.createClient(
   'https://rckcnhdgqmnshrnebtzi.supabase.co', // replace with your Supabase URL
-  'PASTE_YOUR_ANON_KEY_HERE'                 // replace with your anon key
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJja2NuaGRncW1uc2hybmVidHppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMzIzMTcsImV4cCI6MjA4MjcwODMxN30.ONVRe0lCq5kcEEMWJ6kHb7QYuAyqzZYlPwxCGNDYapg'                 // replace with your anon key
 );
 
 // --------------------
